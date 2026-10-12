@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="html-root">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#120822">
+<title id="page-title">حذف رابط استعادة فري فاير</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #120822;
+  color: white;
+  font-family: Arial, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+.stars-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image: 
+    radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 40px 70px, #b19cd9, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 90px 40px, #ffffff, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 160px 120px, #e6e6fa, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 230px 180px, #ffffff, rgba(0,0,0,0));
+  background-repeat: repeat;
+  background-size: 250px 250px;
+  animation: moveStars 50s linear infinite;
+  opacity: 0.4;
+}
+
+@keyframes moveStars {
+  from { transform: translateY(0); }
+  to { transform: translateY(-250px); }
+}
+
+.lang-container {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 100;
+}
+
+.lang-toggle {
+  background: #1e1133;
+  border: 1px solid #7d4cdb55;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  box-shadow: 0 0 15px #7d4cdb15;
+  transition: all 0.3s ease;
+}
+
+.lang-toggle:hover {
+  background: #2b1847;
+  border-color: #9b6ef3;
+  box-shadow: 0 0 20px #7d4cdb33;
+}
+
+.lang-toggle i {
+  color: #b19cd9;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.lang-toggle:active i {
+  transform: rotate(360deg) scale(1.2);
+}
+
+.lang-menu {
+  position: absolute;
+  top: 45px;
+  left: 0;
+  background: #190f2b;
+  border: 1px solid #7d4cdb55;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 5px 20px rgba(125, 76, 219, 0.2);
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px) scale(0.95);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 120px;
+}
+
+.lang-menu.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+.lang-option {
+  background: transparent;
+  border: none;
+  color: white;
+  padding: 10px 15px;
+  text-align: left;
+  cursor: pointer;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.2s;
+}
+
+.lang-option:hover {
+  background: #2b1847;
+  color: #b19cd9;
+}
+
+.lang-option.selected {
+  color: #b19cd9;
+  font-weight: bold;
+}
+
+.entry {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 22px;
+}
+
+.card {
+  width: 100%;
+  max-width: 390px;
+  padding: 28px 22px;
+  border: 1px solid #7d4cdb44;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #1d1033, #120822);
+  text-align: center;
+  box-shadow: 0 0 35px #7d4cdb15;
+}
+
+.logo {
+  font-size: 45px;
+  color: #9b6ef3;
+  margin-bottom: 15px;
+}
+
+h1 {
+  font-size: 24px;
+  color: #b19cd9;
+  margin-bottom: 12px;
+}
+
+.subtitle {
+  color: #c4b5fd;
+  font-size: 14px;
+  line-height: 1.9;
+  margin-bottom: 25px;
+}
+
+input, button {
+  font: inherit;
+}
+
+input {
+  width: 100%;
+  padding: 15px;
+  background: #170c27;
+  border: 1px solid #4c2c85;
+  border-radius: 10px;
+  color: white;
+  outline: none;
+  text-align: center;
+  direction: ltr;
+  margin-bottom: 12px;
+}
+
+input:focus {
+  border-color: #9b6ef3;
+}
+
+.error {
+  display: none;
+  color: #ff6b6b;
+  background: #2d1217;
+  border: 1px solid #8c2634;
+  padding: 11px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+
+.start {
+  width: 100%;
+  border: none;
+  border-radius: 10px;
+  padding: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #7c3aed;
+  color: white;
+  transition: background 0.3s;
+}
+
+.start:hover {
+  background: #6d28d9;
+}
+
+.start:active {
+  transform: scale(.98);
+}
+
+.loader-box {
+  display: none;
+  margin-top: 15px;
+  text-align: center;
+}
+
+.loader-status-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 13px;
+  color: #c4b5fd;
+}
+
+.loader-bar-bg {
+  width: 100%;
+  height: 12px;
+  background: #170c27;
+  border: 1px solid #4c2c85;
+  border-radius: 20px;
+  overflow: hidden;
+  padding: 2px;
+  box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
+}
+
+.loader-bar-fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #7c3aed, #a855f7, #c084fc);
+  border-radius: 20px;
+  box-shadow: 0 0 12px #9b6ef3;
+  transition: width 0.15s ease-out;
+}
+
+.note {
+  margin-top: 18px;
+  color: #8b7ca8;
+  font-size: 11px;
+}
+
+.scare {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  background: #050000;
+  overflow-y: auto;
+  padding: 20px;
+  touch-action: pan-y;
+}
+
+.scare.active {
+  display: block;
+  animation: appear .3s ease;
+}
+
+@keyframes appear {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.scare.red-flash {
+  animation: redFlash .5s steps(2, end) infinite;
+}
+
+@keyframes redFlash {
+  0%, 75% { background: #080000; }
+  76%, 100% { background: #300000; }
+}
+
+.scare.white-flash {
+  animation: whiteFlash .35s steps(2, end) infinite;
+}
+
+@keyframes whiteFlash {
+  0%, 45% { background: #050000; }
+  50%, 100% { background: #fff; }
+}
+
+.scare.glitch {
+  animation: glitch .15s steps(2, end) infinite;
+}
+
+@keyframes glitch {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(2px, 0); }
+  50% { transform: translate(0, 1px); }
+  75% { transform: translate(-2px, 0); }
+  100% { transform: translate(0, 0); }
+}
+
+.top {
+  text-align: center;
+  color: #ff3333;
+  font-size: 12px;
+  letter-spacing: 1px;
+  border-bottom: 1px solid #ff222244;
+  padding: 12px 0;
+}
+
+.warning {
+  text-align: center;
+  margin: 28px 0 20px;
+}
+
+.skull {
+  font-size: 50px;
+  color: #ff2525;
+  margin-bottom: 15px;
+  text-shadow: 0 0 15px red;
+}
+
+.warning h2 {
+  font-size: clamp(27px, 7vw, 40px);
+  color: #ff2525;
+  text-shadow: 0 0 18px red;
+  line-height: 1.6;
+}
+
+.white-flash .warning h2,
+.white-flash .skull {
+  color: red;
+  text-shadow: 0 0 20px red;
+}
+
+.status {
+  color: #ff6868;
+  text-align: center;
+  font-size: 13px;
+  margin: 18px 0;
+}
+
+.progress {
+  height: 8px;
+  background: #351010;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 15px 0;
+}
+
+.bar {
+  width: 0;
+  height: 100%;
+  background: #ff2424;
+  box-shadow: 0 0 15px red;
+  transition: width .35s;
+}
+
+.terminal {
+  height: 185px;
+  overflow: hidden;
+  border: 1px solid #451010;
+  background: #030303;
+  padding: 12px;
+  color: #ff4747;
+  font-family: monospace;
+  font-size: 11px;
+  direction: ltr;
+  text-align: left;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+.popups {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+  margin-top: 14px;
+}
+
+.popup {
+  padding: 13px 7px;
+  text-align: center;
+  border: 1px solid #8b1515;
+  background: #190505;
+  color: #ff6868;
+  font-size: 12px;
+}
+
+.footer {
+  color: #b77;
+  text-align: center;
+  font-size: 10px;
+  line-height: 1.8;
+  margin: 18px 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scare.red-flash,
+  .scare.white-flash,
+  .scare.glitch {
+    animation: none;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="stars-bg"></div>
+
+<div class="lang-container" id="langContainer">
+  <button class="lang-toggle" id="langToggle">
+    <i class="fa-solid fa-globe"></i>
+    <span id="langText">العربية</span>
+    <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-right: auto;"></i>
+  </button>
+  <div class="lang-menu" id="langMenu">
+    <button class="lang-option selected" data-lang="ar">العربية</button>
+    <button class="lang-option" data-lang="en">English</button>
+  </div>
+</div>
+
+<main class="entry" id="entry">
+  <section class="card">
+    <div class="logo">
+      <i class="fa-solid fa-fire-flame-curved"></i>
+    </div>
+
+    <h1 id="main-title">حذف رابط استعادة فري فاير</h1>
+
+    <p class="subtitle" id="sub-title">
+      نظام فحص معرّف اللاعب<br>
+      أدخل UID لبدء العملية.
+    </p>
+
+    <input
+      id="uid"
+      type="text"
+      inputmode="numeric"
+      maxlength="11"
+      placeholder="PLAYER UID"
+      autocomplete="off"
+      aria-label="معرّف اللاعب"
+    >
+
+    <p class="error" id="error" role="alert">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      <span id="error-text">خطأ! يجب أن يتكوّن UID من 9 إلى 11 رقماً.</span>
+    </p>
+
+    <button class="start" id="start">
+      <i class="fa-solid fa-bolt"></i> <span id="start-text">بدء الفحص الآن</span>
+    </button>
+
+    <div class="loader-box" id="loaderBox">
+      <div class="loader-status-wrapper">
+        <span id="loaderMsg">جاري البحث عن الحساب...</span>
+        <span id="loaderPercent">1%</span>
+      </div>
+      <div class="loader-bar-bg">
+        <div class="loader-bar-fill" id="loaderFill"></div>
+      </div>
+    </div>
+
+    <p class="note" id="note-text">هاك مدفوع مدة 24h ©</p>
+  </section>
+</main>
+
+<section class="scare" id="scare">
+  <div class="top">
+    <i class="fa-solid fa-triangle-exclamation"></i>
+    SYSTEM ALERT // SIMULATION
+    <i class="fa-solid fa-triangle-exclamation"></i>
+  </div>
+
+  <div class="warning">
+    <div class="skull">
+      <i class="fa-solid fa-skull-crossbones"></i>
+    </div>
+    <h2 id="warning-text">تم اختراق هاتفك<br>يا أحمق!</h2>
+  </div>
+
+  <p class="status" id="status">جارٍ بدء المحاكاة...</p>
+
+  <div class="progress">
+    <div class="bar" id="bar"></div>
+  </div>
+
+  <div class="terminal" id="terminal"></div>
+
+  <div class="popups">
+    <div class="popup" id="popup-1">
+      <i class="fa-solid fa-shield-halved"></i> تحذير أمني
+    </div>
+    <div class="popup" id="popup-2">
+      <i class="fa-solid fa-microchip"></i> فحص تجريبي
+    </div>
+    <div class="popup" id="popup-3">
+      <i class="fa-solid fa-hourglass-half"></i> تحليل وهمي
+    </div>
+    <div class="popup" id="popup-4">
+      <i class="fa-solid fa-triangle-exclamation"></i> تنبيه تجريبي
+    </div>
+  </div>
+
+  <p class="footer" id="footer-text">
+    محاكاة بصرية فقط — لا يوجد اختراق حقيقي.
+  </p>
+</section>
+
+<audio id="scare-sound" preload="auto" loop>
+  <source src="./scare.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const entry = document.getElementById("entry");
+const scare = document.getElementById("scare");
+const uid = document.getElementById("uid");
+const error = document.getElementById("error");
+const bar = document.getElementById("bar");
+const statusText = document.getElementById("status");
+const terminal = document.getElementById("terminal");
+const scareSound = document.getElementById("scare-sound");
+const startButton = document.getElementById("start");
+const langToggle = document.getElementById("langToggle");
+const langMenu = document.getElementById("langMenu");
+const langContainer = document.getElementById("langContainer");
+const langText = document.getElementById("langText");
+const htmlRoot = document.getElementById("html-root");
+const langOptions = document.querySelectorAll(".lang-option");
+
+const loaderBox = document.getElementById("loaderBox");
+const loaderMsg = document.getElementById("loaderMsg");
+const loaderPercent = document.getElementById("loaderPercent");
+const loaderFill = document.getElementById("loaderFill");
+
+let currentLang = "ar";
+
+const translations = {
+  ar: {
+    pageTitle: "حذف رابط استعادة فري فاير",
+    mainTitle: "حذف رابط استعادة فري فاير",
+    subTitle: "نظام فحص معرّف اللاعب<br>أدخل UID لبدء العملية.",
+    errorText: "خطأ! يجب أن يتكوّن UID من 9 إلى 11 رقماً.",
+    startText: "بدء الفحص الآن",
+    noteText: "هاك مدفوع مدة 24h ©",
+    warningText: "تم اختراق هاتفك<br>يا أحمق!",
+    searchAccount: "جاري البحث عن الحساب...",
+    foundAccount: "تم العثور على الحساب",
+    deletingLink: "جاري حذف ربط الاستعادة...",
+    statuses: [
+      "جارٍ فحص معرّف اللاعب...",
+      "تحليل تجريبي للنظام...",
+      "جارٍ تشغيل المؤثرات...",
+      "تنبيه: المحاكاة مستمرة!",
+      "جارٍ تحديث شاشة التحذير..."
+    ],
+    popups: ["تحذير أمني", "فحص تجريبي", "تحليل وهمي", "تنبيه تجريبي"],
+    footerText: "محاكاة بصرية فقط — لا يوجد اختراق حقيقي.",
+    dir: "rtl"
+  },
+  en: {
+    pageTitle: "Delete Free Fire Recovery Link",
+    mainTitle: "Delete Free Fire Recovery Link",
+    subTitle: "Player UID Scanner System<br>Enter UID to start the process.",
+    errorText: "Error! UID must consist of 9 to 11 digits.",
+    startText: "Start Scan Now",
+    noteText: "Paid Hack 24h Duration ©",
+    warningText: "Your phone has been hacked<br>You fool!",
+    searchAccount: "Searching for account...",
+    foundAccount: "Account found successfully",
+    deletingLink: "Deleting recovery link...",
+    statuses: [
+      "Checking player UID...",
+      "Trial system analysis...",
+      "Running visual effects...",
+      "Alert: Simulation continues!",
+      "Updating warning screen..."
+    ],
+    popups: ["Security Warning", "Demo Scan", "Fake Analysis", "Test Alert"],
+    footerText: "Visual simulation only — No real hack.",
+    dir: "ltr"
+  }
+};
+
+langToggle.addEventListener("click", (e) => {
+  e.stopPropagation();
+  langMenu.classList.toggle("active");
+});
+
+document.addEventListener("click", () => {
+  langMenu.classList.remove("active");
+});
+
+langOptions.forEach(option => {
+  option.addEventListener("click", () => {
+    const selectedLang = option.getAttribute("data-lang");
+    if (selectedLang === currentLang) return;
+
+    currentLang = selectedLang;
+    const t = translations[currentLang];
+
+    htmlRoot.setAttribute("lang", currentLang);
+    htmlRoot.setAttribute("dir", t.dir);
+
+    document.getElementById("page-title").textContent = t.pageTitle;
+    document.getElementById("main-title").textContent = t.mainTitle;
+    document.getElementById("sub-title").innerHTML = t.subTitle;
+    document.getElementById("error-text").textContent = t.errorText;
+    document.getElementById("start-text").textContent = t.startText;
+    document.getElementById("note-text").textContent = t.noteText;
+    document.getElementById("warning-text").innerHTML = t.warningText;
+    document.getElementById("popup-1").innerHTML = `<i class="fa-solid fa-shield-halved"></i> ${t.popups[0]}`;
+    document.getElementById("popup-2").innerHTML = `<i class="fa-solid fa-microchip"></i> ${t.popups[1]}`;
+    document.getElementById("popup-3").innerHTML = `<i class="fa-solid fa-hourglass-half"></i> ${t.popups[2]}`;
+    document.getElementById("popup-4").innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${t.popups[3]}`;
+    document.getElementById("footer-text").textContent = t.footerText;
+    
+    langText.textContent = option.textContent;
+
+    langOptions.forEach(opt => opt.classList.remove("selected"));
+    option.classList.add("selected");
+    langMenu.classList.remove("active");
+  });
+});
+
+let timers = [];
+let progress = 0;
+let started = false;
+let tickCount = 0;
+
+const messages = [
+  "[DEMO] Initializing visual effects...",
+  "[SIMULATION] Starting fictional scan...",
+  "[WARNING] Animated security alert active",
+  "[DEMO] Generating fake system messages...",
+  "[SIMULATION] No device access",
+  "[DEMO] Running visual sequence...",
+  "[ALERT] Harmless visual simulation",
+  "[DEMO] No personal data collected"
+];
+
+function later(fn, delay) {
+  const id = setTimeout(() => {
+    timers = timers.filter(timer => timer !== id);
+    fn();
+  }, delay);
+
+  timers.push(id);
+}
+
+function startEffects() {
+  if (started) return;
+
+  const value = uid.value.trim();
+
+  // التحقق من أن المدخل يتراوح بين 9 و 11 رقماً
+  if (!/^[0-9]{9,11}$/.test(value)) {
+    error.style.display = "block";
+    uid.style.borderColor = "#ff3030";
+    uid.focus();
+    return;
+  }
+
+  error.style.display = "none";
+  uid.style.borderColor = "#4c2c85";
+
+  startButton.style.display = "none";
+  loaderBox.style.display = "block";
+
+  let loadVal = 1;
+  const t = translations[currentLang];
+
+  const loadInterval = setInterval(() => {
+    loadVal++;
+    loaderFill.style.width = loadVal + "%";
+    loaderPercent.textContent = loadVal + "%";
+
+    if (loadVal < 50) {
+      loaderMsg.textContent = t.searchAccount;
+    } else if (loadVal === 50) {
+      loaderMsg.textContent = t.foundAccount;
+      clearInterval(loadInterval);
+      setTimeout(() => {
+        resumeLoading();
+      }, 1800);
+      return;
+    } else {
+      loaderMsg.textContent = t.deletingLink;
+    }
+
+    if (loadVal >= 100) {
+      clearInterval(loadInterval);
+      setTimeout(launchScare, 600);
+    }
+  }, 90);
+
+  function resumeLoading() {
+    const secondInterval = setInterval(() => {
+      loadVal++;
+      loaderFill.style.width = loadVal + "%";
+      loaderPercent.textContent = loadVal + "%";
+      loaderMsg.textContent = t.deletingLink;
+
+      if (loadVal >= 100) {
+        clearInterval(secondInterval);
+        setTimeout(launchScare, 600);
+      }
+    }, 90);
+  }
+}
+
+function launchScare() {
+  started = true;
+  tickCount = 0;
+  progress = 0;
+
+  langContainer.style.display = "none";
+
+  entry.style.display = "none";
+  scare.classList.add("active", "red-flash");
+
+  scareSound.volume = 0.5;
+  scareSound.currentTime = 0;
+
+  scareSound.play().catch(() => {
+    statusText.textContent = currentLang === "ar" ? "الصوت غير متاح؛ تحقق من ملف scare.mp3." : "Audio unavailable; check scare.mp3 file.";
+  });
+
+  later(() => {
+    if (!started) return;
+    scare.classList.remove("red-flash");
+    scare.classList.add("white-flash");
+  }, 1800);
+
+  later(() => {
+    if (!started) return;
+    scare.classList.remove("white-flash");
+    scare.classList.add("glitch");
+  }, 4000);
+
+  function tick() {
+    if (!started) return;
+
+    tickCount++;
+    progress = Math.min(progress + Math.random() * 18 + 5, 100);
+
+    bar.style.width = progress + "%";
+    const statuses = translations[currentLang].statuses;
+    statusText.textContent = statuses[tickCount % statuses.length];
+
+    const line = document.createElement("div");
+    line.textContent =
+      messages[tickCount % messages.length] +
+      " [" + Math.random().toString(16).slice(2, 8) + "]";
+
+    terminal.appendChild(line);
+
+    while (terminal.children.length > 8) {
+      terminal.removeChild(terminal.firstChild);
+    }
+
+    if (progress >= 100) progress = 0;
+
+    later(tick, 850);
+  }
+
+  tick();
+}
+
+startButton.addEventListener("click", startEffects);
+
+uid.addEventListener("input", () => {
+  error.style.display = "none";
+  uid.style.borderColor = "#4c2c85";
+  uid.value = uid.value.replace(/[^0-9]/g, "").slice(0, 11);
+});
+
+uid.addEventListener("keydown", event => {
+  if (event.key === "Enter") startEffects();
+});
+</script>
+
+</body>
+</html>
